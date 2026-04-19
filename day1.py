@@ -124,7 +124,7 @@ print(isinstance(buddy, Animal))
 class BannkAccount:
     def __init__(self, owner, balance):
         self.owner = owner
-        self.__balance = balance
+        self.__balance = balance   #private attribute
 
     def deposit(self, amount):
         if amount > 0 :
