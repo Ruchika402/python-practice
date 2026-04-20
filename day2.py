@@ -234,3 +234,81 @@ def fib(n):
         return n
     return fib(n-1)+fib(n-2)
 print(fib(35))   #instant - cached
+
+
+
+# collections modules
+from collections import Counter, defaultdict, namedtuple, deque
+
+# Counter — count occurrences
+words = ["python", "django", "python", "flask", "django", "python"]
+count = Counter(words)
+print(count.most_common(2))   
+
+# defaultdict — no KeyError on missing keys
+scores = defaultdict(list)
+scores["Alice"].append(90)
+scores["Alice"].append(85)
+scores["Bob"].append(78)
+print(dict(scores))   
+
+# namedtuple — lightweight class
+Point = namedtuple("Point", ["x", "y"])
+p = Point(3, 4)
+print(p.x, p.y)               
+print(p._asdict())  
+
+# deque — fast append/pop from both ends
+dq = deque([1, 2, 3])
+dq.appendleft(0)
+dq.append(4)
+dq.popleft()                 
+print(list(dq))    
+
+
+# itertools module
+import itertools
+# chain, islice, groupby, product
+pairs = list(itertools.product([1, 2], ["a", "b"]))
+print(pairs)   
+
+data = [1, 1, 2, 2, 3]
+grouped = {k: list(v) for k, v in itertools.groupby(data)}
+print(grouped)   
+
+
+
+#function module
+from functools import lru_cache, partial, reduce
+
+@lru_cache(maxsize = 128)
+def costly_computation(n):
+    time.sleep(0.001)
+    return n*n
+
+# partial — fix some arguments
+def power(base, exp):
+    return base ** exp
+
+square = partial(power, exp=2)
+cube = partial(power, exp=3)
+print(square(5))  
+print(cube(3))     
+
+# reduce — fold left
+product = reduce(lambda acc, x: acc * x, [1, 2, 3, 4, 5])
+print(product)     
+
+
+#advanced comprehensions
+matrix = [[1,2,3],[4,5,6],[7,8,9]]
+flat = [num for row in matrix for num in row]
+print(flat) 
+
+# Conditional dict comprehension
+students = {"Alice": 90, "Bob": 55, "Charlie": 72, "Diana": 45}
+passed = {name: score for name, score in students.items() if score >= 60}
+print(passed) 
+# Nested dict comprehension
+multiplication = {i: {j: i*j for j in range(1,4)} for i in range(1,4)}
+print(multiplication[2][3]) 
