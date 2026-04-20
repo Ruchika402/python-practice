@@ -312,3 +312,18 @@ print(passed)
 # Nested dict comprehension
 multiplication = {i: {j: i*j for j in range(1,4)} for i in range(1,4)}
 print(multiplication[2][3]) 
+
+# 22. Context managers — writing your own
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource(name):
+    print(f"Acquiring: {name}")
+    try:
+        yield name
+    finally:
+        print(f"Releasing: {name}")
+
+with managed_resource("DB Connection") as res:
+    print(f"Using: {res}")
+# Acquiring: DB Connection → Using → Releasing automatically
