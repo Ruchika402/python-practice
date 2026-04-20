@@ -193,3 +193,44 @@ def repeat(times):
 def greet(name):
     print(f"hello,{name}!")
 greet("Ruchika")
+
+
+
+#stacking multiple decorators
+def bold(func):
+    def wrapper(*args, **kwargs):
+        return f"**{func(*args, **kwargs)}**"
+    return wrapper
+
+def uppercase(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs).upper()
+    return wrapper
+
+@bold
+@uppercase
+def message(text):
+    return text
+print(message("hello django"))
+
+
+
+
+#class based decorator
+class Memorize:
+    def __init__(self, func):
+        self.func = func
+        self.cache = {}
+        functools.update_wrapper(self,func)
+
+    def __call__(self,*args):
+        if args not in self.cache:
+            self.cache[args] = self.func(*args)
+        return self.cache[args]
+    
+@Memorize
+def fib(n):
+    if n<2:
+        return n
+    return fib(n-1)+fib(n-2)
+print(fib(35))   #instant - cached
