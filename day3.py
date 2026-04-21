@@ -82,3 +82,81 @@ print(student1)
 print(student1.average_grade())
 print(asdict(student2))
 print(student1 == student2)  # False, different data
+
+
+
+
+#Mixin reusable behaviour via multiple inheritance
+class LogMixin:
+    def log(self, message: str) -> None:
+        print(f"[{self.__class__.__name__}] {message}")
+
+class ValidateMixin:
+    def validate(self,value,min_val=0,max_val=100):
+        if not (min_val <= value <= max_val):
+            raise ValueError(f"Value {value} out of range [{min_val}, {max_val}]")
+        return value
+    
+class SerializeMixin:
+    def to_dict(self):
+        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+    
+class BankAccount(LogMixin, ValidateMixin, SerializeMixin):
+    def __init__(self, owner: str, balance: float):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount: float):
+        amount = self.validate(amount, min_val=1, max_val=100_000)
+        self.balance += amount
+        self.log(f"Deposited ₹{amount}. New balance: ₹{self.balance}")
+
+    def withdraw(self, amount: float):
+        amount = self.validate(amount, min_val=1, max_val=self.balance)
+        self.balance -= amount
+        self.log(f"Withdrew ₹{amount}. New balance: ₹{self.balance}")
+
+
+
+acc = BankAccount("Ravi", 5000)
+acc.deposit(2000)
+acc.withdraw(1000)
+print(acc.to_dict())  
+
+#MRO resolution order
+print(BankAccount.__mro__)
+
+
+
+#operator overloading
+
+class Vector:
+    def __init__(self, x: float, y: float):
+        self.x, self.y = x, y
+
+    def __add__(self, other: 'Vector') -> 'Vector':
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: 'Vector') -> 'Vector':
+        return Vector(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, scalar: float) -> 'Vector':
+        return Vector(self.x * scalar, self.y * scalar)
+
+    def __abs__(self) -> float:              # magnitude
+        return (self.x**2 + self.y**2) ** 0.5
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Vector):
+            return NotImplemented
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self) -> str:
+        return f"Vector({self.x}, {self.y})"
+    
+v1 = Vector(3, 4)
+v2 = Vector(1, 2)
+print(v1 + v2)       
+print(v1 - v2)    
+print(v1 * 3)           
+print(abs(v1)) 
