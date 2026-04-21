@@ -291,3 +291,124 @@ class SugarDecorator:
 drink = SugarDecorator(MilkDecorator(Coffee()))
 print(drink.description())   # Coffee + Milk + Sugar
 print(f"₹{drink.cost()}") 
+
+
+
+
+
+#data structure 
+#stack using list
+
+class Stack:
+    def __init__(self):
+        self._data = []
+    def push(self, item):
+        self._data.append(item)
+    def pop(self):
+        if not self._data:
+            raise IndexError("Stack is empty")
+        return self._data.pop()
+    def peek(self):
+        if not self._data:
+            raise IndexError("Stack is empty")
+        return self._data[-1]
+    def is_empty(self):
+        return len(self._data) == 0
+    def __len__(self):
+        return len(self._data)
+    def __repr__(self):
+        return f"Stack({self._data})"
+
+# Stack use-case: balanced parentheses checker
+def is_balanced(expr: str) -> bool:
+    stack = Stack()
+    pairs = {')': '(', ']': '[', '}': '{'}
+    for ch in expr:
+        if ch in '([{':
+            stack.push(ch)
+        elif ch in ')]}':
+            if stack.is_empty() or stack.pop() != pairs[ch]:
+                return False
+    return stack.is_empty()
+print(is_balanced("({[]})"))  # True
+print(is_balanced("({[})"))   # False
+
+
+
+
+from collections import deque
+
+class Queue:
+    def __init__(self):
+        self._data = deque()
+
+    def enqueue(self, item): self._data.append(item)
+    def dequeue(self): return self._data.popleft() if self._data else None
+    def front(self): return self._data[0] if self._data else None
+    def is_empty(self): return len(self._data) == 0
+    def __len__(self): return len(self._data)
+    def __repr__(self): return f"Queue({list(self._data)})"
+
+q = Queue()
+for task in ["task1", "task2", "task3"]:
+    q.enqueue(task)
+print(q.dequeue())
+
+
+#linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+            return
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+        curr.next = new_node
+
+    def prepend(self, data):
+        new_node = Node(data)
+        new_node.next = self.head
+        self.head = new_node
+
+    def delete(self, data):
+        if not self.head: return
+        if self.head.data == data:
+            self.head = self.head.next
+            return
+        curr = self.head
+        while curr.next and curr.next.data != data:
+            curr = curr.next
+        if curr.next:
+            curr.next = curr.next.next
+
+    def reverse(self):
+        prev, curr = None, self.head
+        while curr:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
+        self.head = prev
+
+    def to_list(self):
+        result, curr = [], self.head
+        while curr:
+            result.append(curr.data)
+            curr = curr.next
+        return result
+
+ll = LinkedList()
+for v in [1, 2, 3, 4, 5]:
+    ll.append(v)
+ll.reverse()
+print(ll.to_list())
