@@ -160,3 +160,134 @@ print(v1 + v2)
 print(v1 - v2)    
 print(v1 * 3)           
 print(abs(v1)) 
+
+
+
+
+#design patterns
+#singleton pattern
+class databaseConnection:
+    _instance = None
+
+    def __new__(cls,*args,**kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._connected = False
+        return cls._instance
+    
+    def connect(self, url: str):
+        if not self._connected:
+            self._url = url
+            self._connected = True
+            print(f"Connected to {url}")
+        else:
+            print("Already connected!")
+db1 = databaseConnection()
+db2 = databaseConnection()  
+print(db1 is db2)  # True, both are the same instance
+db1.connect("localhost:5432/mydb")
+db2.connect("localhost:5432/otherdb")  # Still connected to the first URL
+
+
+
+
+
+#factory pattern
+class Notification(ABC):
+    @abstractmethod
+    def send(self, message: str):
+        pass
+class EmailNotification(Notification):
+    def __init__(self, email: str):
+        self.email = email
+    def send(self, message: str):
+        print(f"Sending email to {self.email}: {message}")
+
+class SMSNotification(Notification):
+    def __init__(self, phone: str):
+        self.phone = phone
+    def send(self, message: str):
+        print(f"Sending SMS to {self.phone}: {message}")
+
+class WhatsappNotification(Notification):
+    def __init__(self, phone: str):
+        self.phone = phone
+    def send(self, message: str):
+        print(f"Sending WhatsApp message to {self.phone}: {message}")
+class NotificationFactory:
+    _register = {
+        "email": EmailNotification,
+        "sms": SMSNotification,
+        "whatsapp": WhatsappNotification
+    }
+    @classmethod
+    def create(cls, type_: str, contact: str) -> Notification:
+        klass = cls._register.get(type_.lower())
+        if not klass:
+            raise ValueError(f"Unknown notification type: {type_}")
+        return klass(contact)
+
+    @classmethod
+    def register(cls, type_: str, klass):  # extensible
+        cls._registry[type_] = klass
+
+n1 = NotificationFactory.create("email", "dev@example.com")
+n2 = NotificationFactory.create("sms", "+91-9999999999")
+n3 = NotificationFactory.create("whatsapp", "+91-9999999999")
+n1.send("Your OTP is 4821")
+n2.send("Your OTP is 4821")
+
+
+
+
+# observer pattern
+from typing import Callable
+
+class EventEmitter:
+    def __init__(self):
+        self._listeners: dict[str, list[Callable]] = {}
+
+    def on(self, event: str, callback: Callable):
+        self._listeners.setdefault(event, []).append(callback)
+
+    def emit(self, event: str, *args, **kwargs):
+        for cb in self._listeners.get(event, []):
+            cb(*args, **kwargs)
+
+class UserService:
+    def __init__(self):
+        self.events = EventEmitter()
+
+    def register(self, username: str):
+        print(f"User '{username}' registered.")
+        self.events.emit("user_registered", username=username)
+
+svc = UserService()
+svc.events.on("user_registered",
+    lambda username: print(f"Sending welcome email to {username}"))
+svc.events.on("user_registered",
+    lambda username: print(f"Creating profile for {username}"))
+
+svc.register("alice")
+
+
+
+
+#decorator pattern
+class Coffee:
+    def cost(self): return 50
+    def description(self): return "Coffee"
+
+class MilkDecorator:
+    def __init__(self, coffee): self._coffee = coffee
+    def cost(self): return self._coffee.cost() + 15
+    def description(self): return self._coffee.description() + " + Milk"
+
+class SugarDecorator:
+    def __init__(self, coffee): self._coffee = coffee
+    def cost(self): return self._coffee.cost() + 5
+    def description(self): return self._coffee.description() + " + Sugar"
+
+drink = SugarDecorator(MilkDecorator(Coffee()))
+print(drink.description())   # Coffee + Milk + Sugar
+print(f"₹{drink.cost()}") 
