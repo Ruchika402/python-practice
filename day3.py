@@ -52,11 +52,8 @@ class Icon:
     def draw(self) -> str:
         return "Drawing Icon"
 
-def render(component: Drawable) -> None:
-    print(component.draw())
 
-render(Button())   # works — no inheritance needed!
-render(Icon())     # duck typing + static type check
+
 
 
 #dataclasses
