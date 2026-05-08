@@ -2,6 +2,9 @@
 for i in range(1,6):
     print(f"Count:{i}")
 
+for j in range (6,-1):
+    print(f"Count:{j}")
+
 # while loop
 n=10
 while n > 0:
