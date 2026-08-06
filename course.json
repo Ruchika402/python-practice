@@ -1,0 +1,10 @@
+{
+    "course": "Djnago full stack",
+    "days": 2,
+    "topics": [
+        "Py",
+        "Django",
+        "Rest Api",
+        "deploy"
+    ]
+}

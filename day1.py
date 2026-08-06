@@ -101,7 +101,7 @@ print(cat.speak())
 print(dog.speak())
 print(cat)
 print(dog)
-
+print(cat)
 
 
 #Inheritence
